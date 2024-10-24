@@ -1,0 +1,5 @@
+*.ipynb_checkpoints
+*.txt
+*.ipynb
+*_pycache_
+*.pyc
