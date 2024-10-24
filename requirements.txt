@@ -1,0 +1,4 @@
+seaborn
+urlextract
+wordcloud
+emoji
