@@ -148,12 +148,43 @@ def emoji_helper(selected_user, df):
     if selected_user != "Overall":
         df = df[df['user'] == selected_user]
     emojis = []
-    count_emoji = 0
     for e in df['emoji']:
         if e != "":
             emojis.extend(e)
-            count_emoji += 1
 
-    emoji_df = pd.DataFrame(Counter(emojis).most_common(len(Counter(emojis))))[:41]
-    chat_percent_with_emoji = round((count_emoji/len(df['message']))*100,2)
-    return emoji_df, chat_percent_with_emoji
+    messages_with_emoji = len(df[df['emoji'] != ""])
+    messages_without_emoji = len(df) - messages_with_emoji
+    sizes = [messages_with_emoji, messages_without_emoji]
+    
+    # sediment analysis of emoji
+    emoji_sentiment_dict = {
+    # Positive emojis
+    "😀": "positive", "😃": "positive", "😄": "positive", "😁": "positive", "😆": "positive", "😅": "positive",
+    "😂": "positive", "🤣": "positive", "😊": "positive", "😇": "positive", "😍": "positive", "😘": "positive",
+    "😚": "positive", "😋": "positive", "😜": "positive", "😎": "positive", "🤩": "positive", "🥳": "positive",
+    "🤗": "positive", "💖": "positive", "💓": "positive", "💕": "positive", "💞": "positive", "💝": "positive",
+    "💙": "positive", "💚": "positive", "💛": "positive", "💜": "positive", "❤️": "positive", "🧡": "positive",
+    "💗": "positive", "🎉": "positive", "🎊": "positive", "🥰": "positive", "😻": "positive", "👍": "positive",
+    "🙏": "positive", "✨": "positive", "🌟": "positive", "🥹": "positive", "🔥": "positive", "💪": "positive",
+    "🦄": "positive", "🌻": "positive", "🌼": "positive", "🥳": "positive", "🍀": "positive", "🎈": "positive",
+    "🍰": "positive", "💌": "positive", "🧁": "positive", "☀️": "positive", "🌊": "positive", "🥲": 'positive',
+
+    # Negative emojis
+    "😞": "negative", "😔": "negative", "😟": "negative", "😕": "negative", "🙁": "negative", "☹️": "negative",
+    "😣": "negative", "😖": "negative", "😫": "negative", "😩": "negative", "😭": "negative", "😢": "negative",
+    "😨": "negative", "😰": "negative", "😱": "negative", "😡": "negative", "😠": "negative", "🤬": "negative",
+    "👿": "negative", "😤": "negative", "😓": "negative", "🤒": "negative", "🤕": "negative", "🥵": "negative",
+    "🥶": "negative", "😳": "negative", "😖": "negative", "💔": "negative", "💀": "negative", "☠️": "negative",
+    "👎": "negative", "😵": "negative", "😧": "negative", "🤢": "negative", "🤮": "negative", "🤧": "negative",
+    "😬": "negative", "😱": "negative", "😵‍💫": "negative", "🥺": "negative", "😧": "negative", "🖤": "negative",
+    "💩": "negative", "😿": "negative", "😤": "negative"
+    }
+
+    
+    sentiment_count = {"positive": 0, "neutral": 0, "negative": 0}
+    for emoji in emojis:
+        sentiment = emoji_sentiment_dict.get(emoji, "neutral")  # Default to 'neutral' if not found
+        sentiment_count[sentiment] += 1
+
+    emoji_df = pd.DataFrame(Counter(emojis).most_common(len(Counter(emojis))))[:51]
+    return emoji_df, sizes, sentiment_count

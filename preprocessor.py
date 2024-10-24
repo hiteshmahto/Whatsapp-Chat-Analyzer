@@ -47,6 +47,10 @@ def preprocess(data):
     def clean_message(text):
         cleaned_text = emoji.replace_emoji(text, replace="")  # Remove emojis
         cleaned_text = re.sub(r'<media omitted>', '', cleaned_text, flags=re.IGNORECASE)  # Remove media mentions
+        cleaned_text = re.sub(r'<This message was edited>', '', cleaned_text, flags=re.IGNORECASE)
+        cleaned_text = re.sub(r'This message was deleted', '', cleaned_text, flags=re.IGNORECASE)
+        cleaned_text = re.sub(r'null', '', cleaned_text, flags=re.IGNORECASE)
+        cleaned_text = re.sub(r'http\S+|www\S+', '', cleaned_text)
         cleaned_text = re.sub(r'\s+', ' ', cleaned_text).strip()  # Remove extra spaces
         return cleaned_text if cleaned_text else ""  # Return empty string if no content
 
